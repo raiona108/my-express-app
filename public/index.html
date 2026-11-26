@@ -17,7 +17,6 @@
         <p id="auth-subtitle" class="text-slate-400 text-sm mt-1">Sign in to track your daily progress</p>
       </div>
 
-      <!-- Error Banner -->
       <div id="auth-error" class="hidden mb-4 p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm"></div>
 
       <form id="auth-form" class="space-y-4">
@@ -57,25 +56,43 @@
   <!-- DASHBOARD SECTION (Shown when logged in) -->
   <div id="dashboard-section" class="hidden max-w-3xl mx-auto px-4 py-8">
     <!-- Top Bar -->
-    <header class="flex items-center justify-between pb-6 border-b border-slate-800">
+    <header class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-800">
       <div>
         <h1 class="text-2xl font-bold flex items-center gap-2">
           <span>🎯</span> Habit Tracker
         </h1>
         <p class="text-slate-400 text-sm mt-1">
-          Welcome back, <span id="user-name" class="text-slate-200 font-medium"></span> • <span id="today-date"></span>
+          Welcome back, <span id="user-name" class="text-slate-200 font-medium"></span>
         </p>
       </div>
-      <button id="logout-btn"
-        class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-sm font-medium text-slate-300 transition cursor-pointer">
-        Logout
-      </button>
+
+      <div class="flex items-center gap-3">
+        <!-- Date Switcher -->
+        <div class="flex items-center bg-slate-900 border border-slate-800 rounded-lg p-1">
+          <button id="prev-day-btn" title="Previous day"
+            class="px-2.5 py-1 rounded hover:bg-slate-800 text-slate-300 transition cursor-pointer">
+            ←
+          </button>
+          <span id="selected-date" class="px-3 text-sm font-medium text-slate-200"></span>
+          <button id="next-day-btn" title="Next day"
+            class="px-2.5 py-1 rounded hover:bg-slate-800 text-slate-300 transition cursor-pointer">
+            →
+          </button>
+        </div>
+        <button id="today-btn" class="hidden px-3 py-1.5 rounded-lg bg-indigo-600/20 border border-indigo-500/40 text-indigo-300 text-xs font-medium hover:bg-indigo-600/30 transition cursor-pointer">
+          Today
+        </button>
+        <button id="logout-btn"
+          class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-sm font-medium text-slate-300 transition cursor-pointer">
+          Logout
+        </button>
+      </div>
     </header>
 
     <!-- Daily Progress Card -->
     <section class="mt-6 bg-slate-900 border border-slate-800 rounded-2xl p-6">
       <div class="flex justify-between items-center mb-2">
-        <span class="text-sm font-medium text-slate-300">Today's Progress</span>
+        <span id="progress-label" class="text-sm font-medium text-slate-300">Today's Progress</span>
         <span id="progress-text" class="text-sm font-semibold text-indigo-400">0 / 0 completed</span>
       </div>
       <div class="w-full bg-slate-800 rounded-full h-3 overflow-hidden">
@@ -102,12 +119,49 @@
 
     <!-- Habits List -->
     <section class="mt-6">
-      <h2 class="text-lg font-semibold mb-3">Your Daily Habits</h2>
+      <h2 class="text-lg font-semibold mb-3">Your Habits</h2>
       <div id="habits-list" class="space-y-3"></div>
       <p id="empty-state" class="hidden text-center text-slate-500 py-8 bg-slate-900/50 border border-slate-800/60 rounded-2xl">
         No habits yet. Add your first habit above to start tracking!
       </p>
     </section>
+  </div>
+
+  <!-- EDIT HABIT MODAL -->
+  <div id="edit-modal" class="fixed inset-0 bg-black/70 backdrop-blur-xs flex items-center justify-center px-4 z-50">
+    <div class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl">
+      <h2 class="text-lg font-bold mb-4">Edit Habit</h2>
+      <form id="edit-habit-form" class="space-y-4">
+        <input type="hidden" id="edit-habit-id" />
+        <div class="grid grid-cols-4 gap-3">
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">Icon</label>
+            <input type="text" id="edit-habit-icon" maxlength="4"
+              class="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-center text-lg focus:outline-none focus:border-indigo-500" />
+          </div>
+          <div class="col-span-3">
+            <label class="block text-xs text-slate-400 mb-1">Habit Name</label>
+            <input type="text" id="edit-habit-name" required
+              class="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white focus:outline-none focus:border-indigo-500" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Description</label>
+          <input type="text" id="edit-habit-desc"
+            class="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white focus:outline-none focus:border-indigo-500" />
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" id="cancel-edit-btn"
+            class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-sm font-medium text-slate-300 transition cursor-pointer">
+            Cancel
+          </button>
+          <button type="submit"
+            class="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-sm font-semibold transition cursor-pointer">
+            Save Changes
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 
   <script src="/app.js"></script>

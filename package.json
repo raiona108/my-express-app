@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
   "build:css": "npx @tailwindcss/cli -i ./src/tailwind.css -o ./public/styles.css",
-  "dev": "concurrently \"node --watch index.js\" \"npx @tailwindcss/cli -i ./src/tailwind.css -o ./public/styles.css --watch\"",
+  "dev": "concurrently \"node --watch index.js\" \"npx @tailwindcss/cli -i ./src/tailwind.css -o ./public/css/app.css --watch\"",
   "start": "npm run build:css && node index.js"
 },
   "keywords": [],
