@@ -4,17 +4,21 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "node --watch index.js",
-    "start": "node index.js"
-  },
+  "build:css": "npx @tailwindcss/cli -i ./src/tailwind.css -o ./public/styles.css",
+  "dev": "concurrently \"node --watch index.js\" \"npx @tailwindcss/cli -i ./src/tailwind.css -o ./public/styles.css --watch\"",
+  "start": "npm run build:css && node index.js"
+},
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "@tailwindcss/cli": "^4.3.5",
     "bcrypt": "^6.0.0",
+    "concurrently": "^10.0.7",
     "express": "^5.3.0",
     "jsonwebtoken": "^9.0.3",
-    "mongoose": "^9.13.1"
+    "mongoose": "^9.13.1",
+    "tailwindcss": "^4.3.5"
   }
 }
