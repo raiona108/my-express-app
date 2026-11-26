@@ -1,10 +1,30 @@
+import 'dotenv/config';
 import express from 'express';
+import mongoose from 'mongoose';
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
-// Lets Express read JSON data sent in req.body
+// Middleware
 app.use(express.json());
+app.use(express.static('public'));
+
+// Test route
+app.get('/api/health', (req, res) => {
+    res.json({ status: 'ok', messge: 'Habit Tracker API is running'});
+});
+
+// Connect to MongoDB and start server
+mongoose.connect(process.env.MONGODB_URI)
+    .then(() => {
+        console.log('Connected to MongoDB Atlas');
+        app.listen(PORT, () => {
+            console.log(`Server running at http://localhost:${PORT}`);
+        });
+    })
+    .catch((err) => {
+        console.error('MongoDB connection error:', err.message);
+    });
 
 // Temporary storage (resets when server restarts)
 let habits = [
