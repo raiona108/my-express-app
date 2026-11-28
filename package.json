@@ -9,7 +9,7 @@
   "start": "npm run build:css && node index.js"
 },
   "keywords": [],
-  "author": "",
+  "author": "Mairehe Robinson",
   "license": "ISC",
   "type": "module",
   "dependencies": {

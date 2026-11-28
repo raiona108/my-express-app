@@ -248,9 +248,10 @@ function renderHabits(habits, dailyHabits) {
 function updateProgressBar(completed, total) {
   const textEl = document.getElementById('progress-text');
   const barEl = document.getElementById('progress-bar');
-  textEl.textContent = `${completed} / ${total} completed`;
   const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
-  barEl.style.width = `${percent}%`;
+
+  if (textEl) textEl.textContent = `${completed} / ${total} completed (${percent}%)`;
+  if (barEl) barEl.style.width = `${percent}%`;
 }
 
 function openEditModal(habit) {
@@ -272,59 +273,85 @@ editForm.addEventListener('submit', async (e) => {
   const icon = document.getElementById('edit-habit-icon').value.trim() || '✅';
   const name = document.getElementById('edit-habit-name').value.trim();
   const description = document.getElementById('edit-habit-desc').value.trim();
+  if (!name) return;
 
-  await fetch('/api/habits/update', {
-    method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    },
-    body: JSON.stringify({ id, name, description, icon })
-  });
+  try {
+    await fetch('/api/habits/update', {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ id, name, description, icon })
+    });
 
-  editModal.classList.add('hidden');
-  await loadHabitsAndProgress();
+    editModal.classList.add('hidden');
+    await loadHabitsAndProgress();
+  } catch (err) {
+    console.error('Error updating habit:', err);
+  }
 });
 
 document.getElementById('add-habit-form').addEventListener('submit', async (e) => {
   e.preventDefault();
 
-const icon = document.getElementById('habit-icon').value.trim() || '✅';
-const name = document.getElementById('habit-name').value.trim();
-const description = document.getElementById('habit-desc').value.trim();
-if (!name) return;
-await fetch('/api/habits/add', {
-method: 'POST',
-headers: {
-'Content-Type': 'application/json',
-'Authorization': `Bearer ${token}`
-},
-body: JSON.stringify({ name, description, icon })
+  const icon = document.getElementById('habit-icon').value.trim() || '✅';
+  const name = document.getElementById('habit-name').value.trim();
+  const description = document.getElementById('habit-desc').value.trim();
+  if (!name) return;
+
+  try {
+    await fetch('/api/habits/add', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ name, description, icon })
+    });
+
+    document.getElementById('habit-name').value = '';
+    document.getElementById('habit-desc').value = '';
+    await loadHabitsAndProgress();
+  } catch (err) {
+    console.error('Error adding habit:', err);
+  }
 });
-document.getElementById('habit-name').value = '';
-document.getElementById('habit-desc').value = '';
-await loadHabitsAndProgress();
-});
+
 async function toggleHabit(habitId, completed) {
-await fetch('/api/dailyEntry/update', {
-method: 'PATCH',
-headers: {
-'Content-Type': 'application/json',
-'Authorization': `Bearer ${token}`
-},
-body: JSON.stringify({ habitId, date: formatDate(currentDateObj), completed })
-});
-await loadHabitsAndProgress();
+  try {
+    await fetch('/api/dailyEntry/update', {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        habitId,
+        date: formatDate(currentDateObj),
+        completed
+      })
+    });
+    await loadHabitsAndProgress();
+  } catch (err) {
+    console.error('Error toggling habit:', err);
+  }
 }
+
 async function deleteHabit(habitId) {
-await fetch('/api/habits/delete', {
-method: 'DELETE',
-headers: {
-'Content-Type': 'application/json',
-'Authorization': `Bearer ${token}`
-},
-body: JSON.stringify({ habitId })
-});
-await loadHabitsAndProgress();
+  try {
+    await fetch('/api/habits/delete', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ habitId })
+    });
+    await loadHabitsAndProgress();
+  } catch (err) {
+    console.error('Error deleting habit:', err);
+  }
 }
+
 initApp();
